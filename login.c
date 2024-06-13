@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+void handleExistingUser(char *name, char *pass);
+void handleNewUser(char *name, char *pass);
 void RegisterUser(char *name);
 int isUserPresent(char *name, char *pass);
 void checkPassword(char *name, char *pass);
@@ -26,36 +28,12 @@ int main(){
     switch (inp){
         // existing user
         case 1:
-            printf("Enter your username: ");
-            scanf("%s", name);
-            int state = isUserPresent(name, pass);
-            switch (state) {
-                case 1:
-                    checkPassword(name, pass);
-                    break;
-                case 0:
-                    printf("User name not present, try again");
-                    exit(1);
-            }
+            handleExistingUser(name, pass);
             break;
 
         // New user
         case 2:
-            int i = 0;
-            printf("Enter your username: ");
-            while (i == 0)
-            {
-                scanf("%s", name);
-                int state = isUserPresent(name, pass);
-                if (state == 0) {
-                    i = 1;
-                    break;
-                } else if (state == 1){
-                    printf("User already exist, reenter your username: ");
-                }
-                
-            }
-            RegisterUser(name);
+            handleNewUser(name, pass);
             break;
 
         default:
@@ -80,6 +58,25 @@ void handleExistingUser(char *name, char *pass) {
             exit(1);
     }
 }
+
+void handleNewUser(char *name, char *pass) {
+    int i = 0;
+    printf("Enter your username: ");
+    while (i == 0)
+    {
+        scanf("%s", name);
+        int state = isUserPresent(name, pass);
+        if (state == 0) {
+            i = 1;
+            break;
+        } else if (state == 1){
+            printf("User already exist, reenter your username: ");
+        }
+        
+    }
+    RegisterUser(name);
+}
+
 
 void RegisterUser(char *name) {
     FILE *file = fopen("./password.txt", "a");
