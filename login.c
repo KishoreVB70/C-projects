@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 void RegisterUser(char *name);
-int checkIfNewUser(char *name, char *pass);
+int isUserPresent(char *name, char *pass);
 void checkPassword(char *name, char *pass);
 
 
@@ -12,9 +12,9 @@ int main(){
     char name[50];
     char pass[50];
 
-    //Get name
-    printf("Enter your name: ");
-    scanf("%s", name);
+    int inp;
+    printf("Welcome to the App\nare you a\n 1)Existing user\n 2)New user\n");
+    scanf("%d", &inp);
 
     // Open file
     FILE *file = fopen("./password.txt", "r");
@@ -23,23 +23,62 @@ int main(){
         exit(1);
     }
 
-    //Check if new user
-    int state = checkIfNewUser(name, pass);
+    switch (inp){
+        // existing user
+        case 1:
+            printf("Enter your username: ");
+            scanf("%s", name);
+            int state = isUserPresent(name, pass);
+            switch (state) {
+                case 1:
+                    checkPassword(name, pass);
+                    break;
+                case 0:
+                    printf("User name not present, try again");
+                    exit(1);
+            }
+            break;
 
+        // New user
+        case 2:
+            int i = 0;
+            printf("Enter your username: ");
+            while (i == 0)
+            {
+                scanf("%s", name);
+                int state = isUserPresent(name, pass);
+                if (state == 0) {
+                    i = 1;
+                    break;
+                } else if (state == 1){
+                    printf("User already exist, reenter your username: ");
+                }
+                
+            }
+            RegisterUser(name);
+            break;
 
-    // Old user
-    if (state == 0 ) {
-        // CheckPassword
-        checkPassword(name, pass);
-        return 0;
+        default:
+            printf("Unsuccesful login attempt");
+            exit(1);
     }
-
-    // New user
-    RegisterUser(name);
-
 
     fclose(file);
     return 0;
+}
+
+void handleExistingUser(char *name, char *pass) {
+    printf("Enter your username: ");
+    scanf("%s", name);
+    int state = isUserPresent(name, pass);
+    switch (state) {
+        case 1:
+            checkPassword(name, pass);
+            break;
+        case 0:
+            printf("User name not present, try again");
+            exit(1);
+    }
 }
 
 void RegisterUser(char *name) {
@@ -51,20 +90,21 @@ void RegisterUser(char *name) {
 
     fprintf(file, "%s %s\n", name, pass);
 
+    printf("You are succesfully registered!");
 }
 
-int checkIfNewUser(char *name, char *pass) {
+int isUserPresent(char *name, char *pass) {
     FILE *file = fopen("./password.txt", "r");
     char tempName[50];
 
     while (fscanf(file, "%s%s", tempName, pass) != EOF) {
         if (strcmp(name, tempName) == 0) {
             strcpy(name, tempName);
-            return 0;
+            return 1;
         }
     }
 
-    return 1;
+    return 0;
 
 }
 
@@ -86,4 +126,5 @@ void checkPassword(char *name, char *pass) {
             printf("You have entered the wrong password\n Re enter your password\n You have %d attempts left: ", i);
         }
         printf("\nYou are logged out of the portal");
+        exit(1);
 }
