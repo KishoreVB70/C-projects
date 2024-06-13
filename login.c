@@ -2,18 +2,15 @@
 #include <string.h>
 #include <stdlib.h>
 
-// int searchUserName(char name[]);
-void putPassword(char name[], char password[], FILE *file);
 
 // Use SQL instead of file
 int main(){
-    // Variables
-    char name[30];
-    char password[30];
+    char name[50];
+    char pass[50];
 
     //Get name
     printf("Enter your name: ");
-    fgets(name, sizeof(name), stdin);
+    scanf("%s", name);
 
     // Open file
     FILE *file = fopen("./password.txt", "a+");
@@ -22,44 +19,47 @@ int main(){
         exit(1);
     }
 
-    // char line[30];
-    // int n = 0;
-    // while (fgets(line, sizeof(line), file)) {
-    //     // Remove the newline character from the line
-    //     line[strcspn(line, "\n")] = '\0';
+    //Check user
+    char tempName[50];
+    int state = 1;
 
-    //     if (strcmp(line, name) == 0) {
-    //         strcpy(name, "Found");
-    //         break;
-    //     }
-    //     n++;
-    // }
+    while (fscanf(file, "%s%s", tempName, pass) != EOF) {
+        if (strcmp(name, tempName) == 0) {
+            strcpy(name, tempName);
+            state = 0;
+            break;
+        }
+    }
+    if (state == 0 ) {
+        char tempPass[50];
 
-    // puts(name);
-    // printf("%d", n);
+        int i = 3;
+        printf("Welcome back %s \n Enter your password: ", name);
 
-    putPassword(name, password, file);
+        while (i >= 1)
+        {
+            scanf("%s", tempPass);
 
-    // printf("Welcome Mr.");
-    // puts(name);
+            if (strcmp(pass, tempPass) == 0) {
+                printf("Logged In, enjoy the service");
+                return 0;
+            }
+
+            i--;
+            printf("You have entered the wrong password\n Re enter your password\n You have %d attempts left: ", i);
+        }
+
+        printf("\nYou are logged out of the portal");
+        return 0;
+    }
+    
+
+    // New user
+    printf("Welcome new user\n Enter your password: ");
+    scanf("%s", pass);
+    fprintf(file, "%s %s\n", name, pass);
+
 
     fclose(file);
     return 0;
-}
-
-int searchUserName(char name[]) {
-
-}
-
-void putPassword(char name[], char password[], FILE *file) {
-    // New user
-    printf("Enter your password: ");
-    fgets(password, sizeof(password), stdin);
-
-    //  string complementry span
-    // Replace the newline character with empty
-    name[strcspn(name, "\n")] = " ";
-    strcat(name, " ");
-    fputs(name, file);
-    fputs(password, file);
 }
