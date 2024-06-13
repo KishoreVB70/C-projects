@@ -17,7 +17,7 @@ int main(){
     scanf("%s", name);
 
     // Open file
-    FILE *file = fopen("./password.txt", "a+");
+    FILE *file = fopen("./password.txt", "r");
     if (file == NULL) {
         printf("Error opening file!\n");
         exit(1);
