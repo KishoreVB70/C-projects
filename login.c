@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+void RegisterUser(char *name);
+
 
 // Use SQL instead of file
 int main(){
@@ -18,6 +20,7 @@ int main(){
         printf("Error opening file!\n");
         exit(1);
     }
+
 
     //Check user
     char tempName[50];
@@ -55,11 +58,20 @@ int main(){
     
 
     // New user
-    printf("Welcome new user\n Enter your password: ");
-    scanf("%s", pass);
-    fprintf(file, "%s %s\n", name, pass);
+    RegisterUser(name);
 
 
     fclose(file);
     return 0;
+}
+
+void RegisterUser(char *name) {
+    FILE *file = fopen("./password.txt", "a");
+
+    char pass[50];
+    printf("Welcome new user\n Enter your password: ");
+    scanf("%s", pass);
+
+    fprintf(file, "%s %s\n", name, pass);
+
 }
